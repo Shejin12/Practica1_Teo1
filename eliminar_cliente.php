@@ -1,20 +1,14 @@
 <?php
-include("conexion.php");
-session_start();
+require 'conexion.php';
 
-if (isset($_GET['dpi'])) {
-    $dpi = $_GET['dpi'];
+$dpi = $_GET['dpi'] ?? null;
 
-    $stmt = $conn->prepare("DELETE FROM clientes WHERE dpi = ?");
-    $stmt->bind_param("s", $dpi);
-
-    if ($stmt->execute()) {
-        header("Location: listar_clientes.php");
-        exit();
-    } else {
-        echo "Error al eliminar cliente: " . $conn->error;
-    }
-} else {
-    header("Location: listar_clientes.php");
-    exit();
+if (!$dpi) {
+    die("DPI no proporcionado.");
 }
+
+$stmt = $pdo->prepare("DELETE FROM clientes WHERE dpi=:dpi");
+$stmt->execute([':dpi' => $dpi]);
+
+header("Location: listar_clientes.php");
+exit();

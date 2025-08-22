@@ -1,15 +1,11 @@
 <?php
-include("conexion.php");
-session_start();
+require 'conexion.php';
 
-if (!isset($_GET['dpi'])) {
-    header("Location: listar_clientes.php");
-    exit();
+$dpi = $_GET['dpi'] ?? null;
+
+if (!$dpi) {
+    die("DPI no proporcionado.");
 }
-
-$dpi = $_GET['dpi'];
-$res = $conn->query("SELECT * FROM clientes WHERE dpi = '$dpi'");
-$cliente = $res->fetch_assoc();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nombres = $_POST['nombres'];
@@ -17,25 +13,46 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $telefono = $_POST['telefono'];
     $correo = $_POST['correo'];
 
-    $stmt = $conn->prepare("UPDATE clientes SET nombres=?, apellidos=?, telefono=?, correo=? WHERE dpi=?");
-    $stmt->bind_param("sssss", $nombres, $apellidos, $telefono, $correo, $dpi);
+    $sql = "UPDATE clientes 
+            SET nombres=:nombres, apellidos=:apellidos, telefono=:telefono, correo=:correo
+            WHERE dpi=:dpi";
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute([
+        ':nombres' => $nombres,
+        ':apellidos' => $apellidos,
+        ':telefono' => $telefono,
+        ':correo' => $correo,
+        ':dpi' => $dpi
+    ]);
 
-    if ($stmt->execute()) {
-        header("Location: listar_clientes.php");
-        exit();
-    } else {
-        echo "Error: " . $conn->error;
-    }
+    header("Location: listar_clientes.php");
+    exit();
+} else {
+    $stmt = $pdo->prepare("SELECT * FROM clientes WHERE dpi=:dpi");
+    $stmt->execute([':dpi' => $dpi]);
+    $cliente = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (!$cliente) die("Cliente no encontrado.");
 }
 ?>
 
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Cliente</title>
+    <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
 <div class="container">
-    <h2>Editar Cliente</h2>
-    <form method="POST">
-        <input type="text" name="nombres" value="<?= $cliente['nombres'] ?>" required>
-        <input type="text" name="apellidos" value="<?= $cliente['apellidos'] ?>" required>
-        <input type="text" name="telefono" value="<?= $cliente['telefono'] ?>" required>
-        <input type="email" name="correo" value="<?= $cliente['correo'] ?>">
-        <input type="submit" value="Actualizar">
-    </form>
+    <h1>Editar Cliente</h1>
+        <form method="POST">
+            <input type="text" name="nombres" value="<?= htmlspecialchars($cliente['nombres']) ?>" required>
+            <input type="text" name="apellidos" value="<?= htmlspecialchars($cliente['apellidos']) ?>" required>
+            <input type="text" name="telefono" value="<?= htmlspecialchars($cliente['telefono']) ?>" required>
+            <input type="email" name="correo" value="<?= htmlspecialchars($cliente['correo']) ?>" required>
+            <button type="submit">Actualizar Cliente</button>
+        </form>
+    <a href="listar_clientes.php">Volver</a>
 </div>
+</body>
+</html>

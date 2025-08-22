@@ -1,8 +1,8 @@
 <?php
 $host = "localhost";
 $db   = "renta_autos";
-$user = "root";   // cambia si tienes otra config
-$pass = "";       // si tu MySQL tiene contraseña ponla aquí
+$user = "root";   
+$pass = "";       
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8mb4", $user, $pass);

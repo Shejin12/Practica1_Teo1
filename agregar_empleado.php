@@ -2,7 +2,6 @@
     <link rel="stylesheet" href="estilos.css">
 </head>
 
-<div class="container">
 <form action="guardar_empleado.php" method="POST">
     <input type="text" name="dpi" placeholder="DPI" required><br>
     <input type="text" name="nombres" placeholder="Nombres" required><br>
@@ -19,4 +18,3 @@
     </select><br>
     <button type="submit">Guardar</button>
 </form>
-</div>

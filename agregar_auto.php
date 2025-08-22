@@ -13,7 +13,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $modelo = $_POST['modelo'];
     $disponible = isset($_POST['disponible']) ? 1 : 0;
 
-    // Manejo de foto
     $foto = null;
     if (!empty($_FILES['foto']['name'])) {
         $targetDir = "uploads/autos/";

@@ -12,11 +12,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $empleado = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($empleado && $passwrd === $empleado["passwrd"]) {
-        // 🔒 Nota: en producción deberías usar password_hash y password_verify
         $_SESSION["usuario"] = $empleado["dpi"];
         $_SESSION["rol"]     = $empleado["rol"];
 
-        // Redirección según rol
         switch ($empleado["rol"]) {
             case "gerente":
                 header("Location: gerente.php");

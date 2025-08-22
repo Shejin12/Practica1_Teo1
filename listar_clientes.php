@@ -1,45 +1,47 @@
 <?php
 require 'conexion.php';
-session_start();
 
-if (!isset($_SESSION['rol']) || $_SESSION['rol'] !== 'atencion') {
-    header("Location: index.php");
-    exit;
-}
-
-// Aquí usamos $pdo (de conexion.php), NO $conn
-$stmt = $pdo->query("SELECT dpi, nombres, apellidos, telefono, correo
-                     FROM clientes
-                     ORDER BY apellidos, nombres");
+$stmt = $pdo->query("SELECT * FROM clientes");
+$clientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Listado de Clientes</title>
+    <title>Lista de Clientes</title>
     <link rel="stylesheet" href="estilos.css">
 </head>
 <body>
 <div class="container">
-    <h1>👥 Listado de Clientes</h1>
-
-    <table>
-        <tr>
-            <th>DPI</th>
-            <th>Nombres</th>
-            <th>Apellidos</th>
-            <th>Teléfono</th>
-            <th>Correo</th>
-        </tr>
-        <?php while ($row = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
+    <h1>Lista de Clientes</h1>
+    <div class="table-container">
+        <table>
+            <tr>
+                <th>DPI</th>
+                <th>Nombres</th>
+                <th>Apellidos</th>
+                <th>Teléfono</th>
+                <th>Correo</th>
+                <th>Acciones</th>
+            </tr>
+            <?php foreach ($clientes as $row): ?>
             <tr>
                 <td><?= htmlspecialchars($row['dpi']) ?></td>
                 <td><?= htmlspecialchars($row['nombres']) ?></td>
                 <td><?= htmlspecialchars($row['apellidos']) ?></td>
                 <td><?= htmlspecialchars($row['telefono']) ?></td>
-                <td><?= $row['correo'] ? htmlspecialchars($row['correo']) : "-" ?></td>
+                <td><?= htmlspecialchars($row['correo']) ?></td>
+                <td>
+                    <a class="btn-edit" href="editar_cliente.php?dpi=<?= $row['dpi'] ?>">Editar</a>
+                    <a class="btn-delete" href="eliminar_cliente.php?dpi=<?= $row['dpi'] ?>" onclick="return confirm('¿Seguro que deseas eliminar este cliente?')">Eliminar</a>
+                </td>
             </tr>
-        <?php endwhile; ?>
-    </table>
-
-    <a href="empleado.php">⬅ Vol
+            <?php endforeach; ?>
+        </table>
+    </div>
+    <a class="btn" href="crear_cliente.php">Nuevo Cliente</a>
+    <a class="btn" href="empleado.php">Volver</a>
+</div>
+</body>
+</html>

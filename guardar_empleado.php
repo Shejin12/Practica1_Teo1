@@ -14,7 +14,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         ":correo"   => $_POST["correo"],
         ":sueldo"   => $_POST["sueldo"],
         ":username" => $_POST["username"],
-        ":passwrd"  => $_POST["passwrd"]  // ⚠ En producción, usar password_hash()
+        ":passwrd"  => $_POST["passwrd"] 
     ]);
     header("Location: gerente.php");
 }

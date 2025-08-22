@@ -29,7 +29,7 @@ $stmt = $pdo->query($sql);
 </head>
 <body>
 <div class="container">
-    <h1>📋 Listado de Alquileres</h1>
+    <h1>Listado de Alquileres</h1>
 
     <table>
         <tr>
